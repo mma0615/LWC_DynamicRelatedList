@@ -1,0 +1,46 @@
+<template>
+    <!--
+    <div>recordId: {recordId}</br>
+        iconName: {iconName} </br>
+        
+    </div>
+     -->
+    <lightning-layout class="slds-m-top_x-small"  style="width:100%;">
+        <article class="slds-card lightning-card">
+            <div class="slds-card__header slds-grid slds-theme_shade">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate ">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name={iconName} size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a class="slds-card__header-link" onclick={handleGotoRelatedList}>{relationshipName} ({data.length})</a>
+                        </h2>
+                    </div>
+                    
+                    <div class="slds-no-flex">
+                        <lightning-button label="New" onclick={handleCreateRecord}></lightning-button>
+                    </div>
+                    
+                </header>
+            </div>
+             
+            <div>
+                <lightning-datatable
+                    key-field="id"
+                    data={data}
+                    show-row-number-column
+                    hide-checkbox-column
+                    columns={columns}
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+
+            <footer class="slds-card__footer">
+                <a onclick={handleGotoRelatedList}>View All</a>
+            </footer>                            
+            
+        </article>                       
+    </lightning-layout>
+    
+</template>
