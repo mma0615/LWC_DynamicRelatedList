@@ -15,10 +15,11 @@ import { NavigationMixin } from "lightning/navigation";
 import getRecords from '@salesforce/apex/LWC_DynamicRelatedListController.getRecords';
 
 /******** Passing in these below const  */
-const OBJECT_PARENAPITNAME = 'Account';
-const OBJECT_CHILDAPINAME = 'Opportunity';
-const OBJECT_CHILDPARENTFIELD = 'AccountId';
-const OBJECT_FIELDSET = 'Oppo_FieldSet';
+const PARENAPITNAME = 'Account';
+const CHILDAPINAME = 'Opportunity';
+const CHILDPARENTFIELD = 'AccountId';
+const FIELDSET = 'Oppo_FieldSet';
+const RELATIONSHIPLABELNAME = 'Opportunities';
 /******** Passing in these below const  */
 
 export default class LWC_DynamicRelatedList extends NavigationMixin(LightningElement) 
@@ -31,6 +32,7 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
     iconName;
     objectLabel;
     relationshipName;
+    relationshipLabelName = RELATIONSHIPLABELNAME;
 
     @track columns = [
         { label: 'Id', fieldName: 'Id' },
@@ -38,10 +40,10 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
     ];
 
     @wire(getRecords, {recordId: '$recordId',
-        parentAPIName: OBJECT_PARENAPITNAME,
-        childAPIName: OBJECT_CHILDAPINAME,
-        childParentField: OBJECT_CHILDPARENTFIELD,
-        fieldSet: OBJECT_FIELDSET } )
+        parentAPIName: PARENAPITNAME,
+        childAPIName: CHILDAPINAME,
+        childParentField: CHILDPARENTFIELD,
+        fieldSet: FIELDSET } )
         wiredRecords(result) 
         {
             if (result.data) 
@@ -115,7 +117,7 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
                 recordId: this.parentId,
                 relationshipApiName: this.relationshipName,   
                 actionName: "view",
-                objectApiName: OBJECT_CHILDAPINAME
+                objectApiName: CHILDAPINAME
             }
         });
     }
@@ -127,7 +129,7 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
             type: 'standard__objectPage',
             attributes: 
             {
-                objectApiName: OBJECT_CHILDAPINAME,
+                objectApiName: CHILDAPINAME,
                 actionName: 'new'
             }
         });
@@ -161,7 +163,7 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
             attributes: 
             {
                 recordId: row.Id,
-                objectApiName: OBJECT_CHILDAPINAME,
+                objectApiName: CHILDAPINAME,
                 actionName: 'edit'
             }
         });

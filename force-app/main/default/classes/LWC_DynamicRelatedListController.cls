@@ -72,7 +72,7 @@ public with sharing class LWC_DynamicRelatedListController
 
         String query = 'SELECT Id, ' + s + 
                 ' from ' + childAPIName +
-                ' where ' + childParentField + ' =\'' + recordId + '\'' +
+                ' where ' + childParentField + ' =\'' + oLWCData.parentId + '\'' +
                 ' limit 100';
         System.debug('getRecords ==> query: '+ query);        
         oLWCData.listRecord = Database.query(query);
