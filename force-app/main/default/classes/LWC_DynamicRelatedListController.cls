@@ -30,13 +30,15 @@ public with sharing class LWC_DynamicRelatedListController
         System.debug('getRecords ==> childAPIName: '+ childAPIName);
         System.debug('getRecords ==> childParentField: '+ childParentField);
         System.debug('getRecords ==> fieldSet: '+ fieldSet);
+        System.debug('getRecords ==> recordId: '+ recordId);
 
         lwcData oLWCData = new lwcData();
-        oLWCData.parentId = recordId;
-        System.debug('getRecords ==> parentId: '+ recordId);
-        
+
         oLWCData.iconName = getIconName(childAPIName);
         System.debug('getRecords ==> oLWCData.iconName: ' + oLWCData.iconName);
+
+        oLWCData.parentId = getParentId(recordId);
+        System.debug('getRecords ==> parentId: '+ oLWCData.parentId);
 
         /***** Get Object label */
         Map<String, Schema.SObjectType> GlobalDescribeMap = Schema.getGlobalDescribe(); 
@@ -70,12 +72,19 @@ public with sharing class LWC_DynamicRelatedListController
 
         oLWCData.listColumn = JSON.serialize(listColumn);
 
-        String query = 'SELECT Id, ' + s + 
+        if (oLWCData.parentId != null)
+        {
+            String query = 'SELECT Id, ' + s + 
                 ' from ' + childAPIName +
                 ' where ' + childParentField + ' =\'' + oLWCData.parentId + '\'' +
                 ' limit 100';
-        System.debug('getRecords ==> query: '+ query);        
-        oLWCData.listRecord = Database.query(query);
+            System.debug('getRecords ==> query: '+ query);        
+            oLWCData.listRecord = Database.query(query);
+        }
+        else 
+        {
+            oLWCData.listRecord = new List<Object>();
+        }
 
         return oLWCData;
        
@@ -123,7 +132,7 @@ public with sharing class LWC_DynamicRelatedListController
             dfr.getRelationshipName() != null)
         {
             if (selCols.fieldName == 'Name')
-                selCols.fieldName = 'Id';
+                selCols.fieldName = 'Id_Link';
             else
                 selCols.fieldName = selCols.relationshipName + '_Id';
 
@@ -131,7 +140,7 @@ public with sharing class LWC_DynamicRelatedListController
             //selCols.sortable = true;
 
             label selLab = new label();
-            if (selCols.fieldName == 'Id')
+            if (selCols.fieldName == 'Id_Link')
                 selLab.fieldName = 'Name';
             else
                 selLab.fieldName = selCols.relationshipName + '_Name';
@@ -215,7 +224,18 @@ public with sharing class LWC_DynamicRelatedListController
 
         System.debug('getIconName ==> iconName:' + iconName);
         return iconName;
-    }  
+    }
+    
+    /*****
+     * Get parentId
+     * to-do logic for getting parentId if it is different than recordId passing in
+     */
+    private static id getParentId (id parmId)
+    {
+        id parentId = parmId;
+
+        return parentId;
+    }
     
     /*****
      * lwcData
@@ -226,7 +246,7 @@ public with sharing class LWC_DynamicRelatedListController
         @AuraEnabled public string iconName;
         @AuraEnabled public string objectLabel;
         @AuraEnabled public string relationshipName;
-        @AuraEnabled public List<Object> listRecord;
+        @AuraEnabled public List<sObject> listRecord;
         @AuraEnabled public string listColumn;
 
         public lwcData() {}

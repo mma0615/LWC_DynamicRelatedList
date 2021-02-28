@@ -38,6 +38,6 @@ public with sharing class LWC_DynamicRelatedListControllerTest
         //system.debug('***** Standard iconName: ' + iconName);
         //System.assert(iconName != null, 'Standard iconName not found');
 
-        //Test.stopTest();
+        Test.stopTest();
     }
 }

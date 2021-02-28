@@ -2,9 +2,17 @@
     <!--
     <div>recordId: {recordId}</br>
         iconName: {iconName} </br>
-        
+        columns2: {columns2} </br>
+        xxx
     </div>
-     -->
+    -->
+    <!--
+    <c-relatedlist-delete-popup
+            onrefreshdata={handleRefreshData}>
+
+    </c-relatedlist-delete-popup>
+    -->
+
     <lightning-layout class="slds-m-top_x-small"  style="width:100%;">
         <article class="slds-card lightning-card">
             <div class="slds-card__header slds-grid slds-theme_shade">
@@ -15,6 +23,12 @@
                     <div class="slds-media__body">
                         <h2 class="slds-card__header-title">
                             <a class="slds-card__header-link" onclick={handleGotoRelatedList}>{relationshipLabelName} ({data.length})</a>
+                        </h2>
+                    </div>
+
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a class="slds-card__header-link" onclick={handleRefreshData}>Refresh Data</a>
                         </h2>
                     </div>
                     

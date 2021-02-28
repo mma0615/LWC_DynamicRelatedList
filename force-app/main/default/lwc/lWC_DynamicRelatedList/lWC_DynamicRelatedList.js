@@ -20,6 +20,16 @@ const CHILDAPINAME = 'Opportunity';
 const CHILDPARENTFIELD = 'AccountId';
 const FIELDSET = 'Oppo_FieldSet';
 const RELATIONSHIPLABELNAME = 'Opportunities';
+
+// row actions
+const actions = [
+    { label: 'View', name: 'view'}, 
+    { label: 'Edit', name: 'edit'}, 
+    { label: 'Delete', name: 'delete'}
+];
+
+const actionCol = [{type: 'action', typeAttributes: { rowActions: actions },}]
+
 /******** Passing in these below const  */
 
 export default class LWC_DynamicRelatedList extends NavigationMixin(LightningElement) 
@@ -34,9 +44,18 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
     relationshipName;
     relationshipLabelName = RELATIONSHIPLABELNAME;
 
-    @track columns = [
+    columns = [
         { label: 'Id', fieldName: 'Id' },
         { label: 'Name', fieldName: 'Name' }
+    ];
+
+    columns2 = [
+        { label: 'Id', fieldName: 'Id' },
+        { label: 'Name', fieldName: 'Name' },
+        {
+            type: 'action',
+            typeAttributes: { rowActions: actions },
+        }
     ];
 
     @wire(getRecords, {recordId: '$recordId',
@@ -80,6 +99,8 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
             this.columns.push(colRecords[x])
             console.log('*** Columns: ' + colRecords[x]);
         }
+        /* adding Action column */
+        this.columns.push(actionCol[0]);
 
         /***** Setting data to display */
         this.data = new Array();
@@ -88,7 +109,7 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
             {                
                 var temprecord = JSON.parse(JSON.stringify(record));
                 console.log('*** Before Record: ' + JSON.stringify(record)); 
-                temprecord.Id = '/' + record.Id;
+                temprecord.Id_Link = '/' + record.Id;
                 for (const propertyName in temprecord) 
                 {
                     const propertyValue = record[propertyName];
@@ -139,24 +160,26 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
     {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
-
-        if (this.rowActionHandler) {
-            this.rowActionHandler.call()
-        } else {
-            switch (actionName) {
-                case "delete":
-                    this.handleDeleteRecord(row);
-                    break;
-                case "edit":
-                    this.handleEditRecord(row);
-                    break;
-                default:
-            }
+        switch (actionName) 
+        {
+            case "delete":
+                this.handleDeleteRecord(row);
+                break;
+            case "edit":
+                this.handleEditRecord(row, "edit");
+                break;
+            case "view":
+                this.handleEditRecord(row, "view");
+                break;
+            default:
         }
+        
     }
 
-    handleEditRecord(row) 
+    handleEditRecord(row, recMode) 
     {
+        //alert('Record Id: ' + row.Id);
+
         this[NavigationMixin.Navigate](
             {
             type: 'standard__recordPage',
@@ -164,9 +187,12 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
             {
                 recordId: row.Id,
                 objectApiName: CHILDAPINAME,
-                actionName: 'edit'
+                actionName: recMode
             }
         });
+
+        alert('Record Id: ' + row.Id);
+        this.handleRefreshData();
     }
 
     handleDeleteRecord(row) {
@@ -177,11 +203,9 @@ export default class LWC_DynamicRelatedList extends NavigationMixin(LightningEle
         newEditPopup.show();
     }
 
-    handleRefreshData() {
+    handleRefreshData() 
+    {
         this.init();
     }
-
-
-
 
 }
